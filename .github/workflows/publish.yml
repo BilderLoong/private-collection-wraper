@@ -15,6 +15,13 @@ permissions:
   contents: write
   pull-requests: read
 
+concurrency:
+  # Group by the workflow name and the repository_dispatch event type.
+  # Fall back to the git ref for manual (workflow_dispatch) runs.
+  group: ${{ github.workflow }}-${{ github.event.action }}
+  cancel-in-progress: true # If true, any running job in this group will be canceled when a new one starts.
+
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
