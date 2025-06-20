@@ -39,6 +39,10 @@ jobs:
           token: ${{ secrets.PRIVATE_COLLECTION_PAT }}
           # The destination folder for your private repo's contents
           path: './private-graph'
+          # Specify which directory to check out
+          sparse-checkout: Notes/Personal/Logseq
+          # Fetch only the latest commit, no history
+          depth: 1
 
       # Step 3: Build the SPA from the graph located in the checked-out private repo.
       # Note the updated 'graph-directory' path.
