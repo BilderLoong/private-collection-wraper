@@ -1,0 +1,64 @@
+# .github/workflows/publish.yml
+# This file goes in your PUBLIC repository (BilderLoong/private-collection-wraper)
+
+name: Publish Private Logseq Graph
+
+on:
+  push:
+    branches: [main]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# The permissions block is crucial.
+# 'contents: write' is needed for the github-pages-deploy-action to push to the gh-pages branch.
+# 'pull-requests: read' is a good practice for security.
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    name: Build and Deploy Logseq SPA
+    steps:
+      # Step 1: Check out the public repo. This is mostly just to get the workflow file running.
+      - name: Checkout Public Wrapper Repo
+        uses: actions/checkout@v4
+        with:
+          # Optional: You can put this repo's contents in a subfolder if needed, but it's usually not necessary.
+          # path: wrapper
+          
+      # Step 2: Check out the PRIVATE Logseq graph repo into a subfolder.
+      # This is the key step.
+      - name: Checkout Private Logseq Repo
+        uses: actions/checkout@v4
+        with:
+          # The name of your private repository
+          repository: BilderLoong/private-collection
+          # The Personal Access Token stored as a secret
+          token: ${{ secrets.PRIVATE_COLLECTION_PAT }}
+          # The destination folder for your private repo's contents
+          path: './private-graph'
+
+      # Step 3: Build the SPA from the graph located in the checked-out private repo.
+      # Note the updated 'graph-directory' path.
+      - name: Build graph's SPA
+        uses: logseq/publish-spa@main
+        with:
+          # This path MUST point to where your graph is located INSIDE the checked-out folder from the step above.
+          # It's a combination of the 'path' from the checkout step and the original path within that repo.
+          graph-directory: './private-graph/Notes/Personal/Logseq'
+          theme-mode: light
+          accent-color: blue
+
+      # Step 4: Add a .nojekyll file to the output directory
+      - name: Add .nojekyll file
+        run: touch ./www/.nojekyll
+
+      # Step 5: Deploy the generated 'www' folder to the gh-pages branch of THIS public repo.
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          # The folder the action should deploy. Default is 'www', which is correct for logseq/publish-spa.
+          folder: www
+          # The action will automatically push to a 'gh-pages' branch in THIS public repo.
