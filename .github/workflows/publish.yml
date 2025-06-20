@@ -45,7 +45,7 @@ jobs:
           depth: 1
 
       # Step 3: Build the SPA from the graph located in the checked-out private repo.
-      # Note the updated 'graph-directory' path.
+      # Note the updated 'graph-directory' path
       - name: Build graph's SPA
         uses: logseq/publish-spa@main
         with:
