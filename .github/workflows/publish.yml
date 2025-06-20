@@ -1,11 +1,10 @@
-# .github/workflows/publish.yml
 # This file goes in your PUBLIC repository (BilderLoong/private-collection-wraper)
 
 name: Publish Private Logseq Graph
 
 on:
-  push:
-    branches: [main]
+  repository_dispatch:
+    types: [new-logseq-content]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -27,7 +26,7 @@ jobs:
         # with:
           # Optional: You can put this repo's contents in a subfolder if needed, but it's usually not necessary.
           # path: wrapper
-          
+
       # Step 2: Check out the PRIVATE Logseq graph repo into a subfolder.
       # This is the key step.
       - name: Checkout Private Logseq Repo
