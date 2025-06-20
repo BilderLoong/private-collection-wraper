@@ -24,7 +24,7 @@ jobs:
       # Step 1: Check out the public repo. This is mostly just to get the workflow file running.
       - name: Checkout Public Wrapper Repo
         uses: actions/checkout@v4
-        with:
+        # with:
           # Optional: You can put this repo's contents in a subfolder if needed, but it's usually not necessary.
           # path: wrapper
           
